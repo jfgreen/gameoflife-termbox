@@ -1,14 +1,14 @@
-package life
+package game
 
 import "testing"
 
 func TestNewGridNormalCases(t *testing.T) {
-	cases := []struct {x, y int}{
-		{1,1},
-		{5,5},
-		{5,10},
-		{10,5},
-		{1000,1000},
+	cases := []struct{ x, y int }{
+		{1, 1},
+		{5, 5},
+		{5, 10},
+		{10, 5},
+		{1000, 1000},
 	}
 	for _, c := range cases {
 		got := NewGrid(c.x, c.y).cells
@@ -74,38 +74,10 @@ func TestNeighbours(t *testing.T) {
 		}, 5, 4}, x: 0, y: 0, want: 8},
 	}
 	for _, c := range cases {
-		got := c.grid.AliveNeighbours(c.x, c.y)
+		got := c.grid.ActiveNeighbours(c.x, c.y)
 		if got != c.want {
-			t.Errorf("Given Grid %q, AliveNeighbours(%d,%d) == %d, want %d", c.grid, c.x, c.y, got, c.want)
-		}
-	}
-}
-
-func TestString(t *testing.T) {
-	cases := []struct {
-		grid *Grid
-		want string
-	}{
-		{grid: &Grid{[][]bool{
-			{false, false, false},
-			{false, false, false},
-			{false, false, false},
-		}, 3, 3}, want: "░░░\n░░░\n░░░\n"},
-		{grid: &Grid{[][]bool{
-			{true, true, true},
-			{true, true, true},
-			{true, true, true},
-		}, 3, 3}, want: "███\n███\n███\n"},
-		{grid: &Grid{[][]bool{
-			{true, false, true},
-			{false, true, true},
-			{false, false, true},
-		}, 3, 3}, want: "█░█\n░██\n░░█\n"},
-	}
-	for _, c := range cases {
-		got := c.grid.String()
-		if got != c.want {
-			t.Errorf("Given Grid %+v, String == %s, want %s", c.grid.cells, got, c.want)
+			t.Errorf("Given Grid %q, AliveNeighbours(%d,%d) == %d, want %d",
+				c.grid.cells, c.x, c.y, got, c.want)
 		}
 	}
 }

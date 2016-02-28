@@ -1,12 +1,8 @@
-package life
+package game
 
 import (
 	"math/rand"
-	"bytes"
 )
-
-const alive rune = '█'
-const dead rune = '░'
 
 type Grid struct {
 	cells         [][]bool
@@ -31,24 +27,24 @@ func (g *Grid) Randomise() {
 	}
 }
 
-func (g *Grid) AliveNeighbours(x, y int) int {
-	aliveNeighbours := 0
+func (g *Grid) ActiveNeighbours(x, y int) int {
+	activeNeighbours := 0
 	for dx := -1; dx <= 1; dx++ {
 		for dy := -1; dy <= 1; dy++ {
 			nx, ny := g.toroidal(x+dx, y+dy)
 			if (dx != 0 || dy != 0) && g.Get(nx, ny) {
-				aliveNeighbours++
+				activeNeighbours++
 			}
 		}
 	}
-	return aliveNeighbours
+	return activeNeighbours
 }
 
-func (g* Grid) Get(x, y int) bool {
+func (g *Grid) Get(x, y int) bool {
 	return g.cells[y][x]
 }
 
-func (g* Grid) Set(x, y int, s bool) {
+func (g *Grid) Set(x, y int, s bool) {
 	g.cells[y][x] = s
 }
 
@@ -62,19 +58,4 @@ func (g *Grid) toroidal(x, y int) (tx, ty int) {
 		ty += g.Height
 	}
 	return
-}
-
-func (g *Grid) String() string {
-	var state bytes.Buffer
-	for y := 0; y < g.Height; y++ {
-		for x := 0; x < g.Width; x++ {
-			if g.Get(x, y) {
-				state.WriteRune(alive)
-			} else {
-				state.WriteRune(dead)
-			}
-		}
-		state.WriteRune('\n')
-	}
-	return state.String()
 }
