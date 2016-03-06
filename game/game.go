@@ -15,10 +15,10 @@ type Game struct {
 	eventQueue chan termbox.Event
 	frameDelay time.Duration
 	lastTick   time.Time
-	running    bool
+	running, paused    bool
 }
 
-// TODO: Space to pause, click to toggle
+// TODO: Click to toggle
 // TODO: Add config, debug, interactivity - take a look at gomatrix for some ideas
 // TODO: Command line argument for FPS
 // TODO: Add some proper control channels to exit more gracefully
@@ -48,6 +48,7 @@ func Begin(fps float32) {
 
 func (g *Game) Start() {
 	g.running = true
+	g.paused = false
 	for g.running {
 		g.loop()
 	}
@@ -58,7 +59,9 @@ func (g *Game) loop() {
 	case event := <-g.eventQueue:
 		g.handleEvent(event)
 	default:
-		g.life.Step()
+		if !g.paused {
+			g.life.Step()
+		}
 		g.life.Draw()
 		g.wait()
 	}
@@ -71,6 +74,8 @@ func (g *Game) handleEvent(e termbox.Event) {
 			g.running = false
 		case e.Ch == 'r':
 			g.life.Randomise()
+		case e.Key == termbox.KeySpace:
+			g.paused = !g.paused
 		}
 	}
 }
