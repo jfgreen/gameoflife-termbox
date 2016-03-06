@@ -2,13 +2,13 @@ package game
 
 type Life struct {
 	world, temp *Grid
+	Width, Height int
 }
 
 func NewLife(width, height int) *Life {
 	world := NewGrid(width, height)
 	temp := NewGrid(width, height)
-	world.Randomise()
-	return &Life{world, temp}
+	return &Life{world, temp, width, height}
 }
 
 func (l *Life) nextState(x, y int) bool {
@@ -31,10 +31,10 @@ func (l *Life) Step() {
 	l.world, l.temp = l.temp, l.world
 }
 
-func (l *Life) State(x, y int) bool {
+func (l *Life) Alive(x, y int) bool {
 	return l.world.Get(x, y)
 }
 
-func (l *Life) Size() (int, int) {
-	return l.world.Width, l.world.Height
+func (l *Life) Randomise() {
+	l.world.Randomise()
 }
