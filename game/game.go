@@ -24,7 +24,7 @@ type Game struct {
 // TODO: Add some proper control channels to exit more gracefully
 // TODO: Handle resizing
 
-func Begin(fps float32) {
+func Begin(fps int) {
 
 	err := termbox.Init()
 	if err != nil {
@@ -36,7 +36,7 @@ func Begin(fps float32) {
 	life := NewLife(w, h)
 	life.Randomise()
 
-	delay := time.Duration((float32(time.Second)/fps))
+	delay := time.Duration((float32(time.Second)/float32(fps)))
 	fmt.Println(delay)
 	eventQueue := make(chan termbox.Event)
 	publishEvents(eventQueue)

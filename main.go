@@ -3,9 +3,13 @@ package main
 
 import (
 	"github.com/jfgreen/gameoflife-termbox/game"
+	"flag"
 )
 
-
 func main() {
-	game.Begin(25);
+
+	fps := flag.Int("fps", 25, "Frames per second.")
+	flag.Parse()
+
+	game.Begin(*fps);
 }
