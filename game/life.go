@@ -35,6 +35,10 @@ func (l *Life) Alive(x, y int) bool {
 	return l.world.Get(x, y)
 }
 
+func (l *Life) Flip(x, y int) {
+	l.world.Set(x, y, !l.world.Get(x, y))
+}
+
 func (l *Life) Randomise() {
 	l.world.Randomise()
 }

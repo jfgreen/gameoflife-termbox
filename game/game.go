@@ -18,10 +18,10 @@ type Game struct {
 	running, paused    bool
 }
 
-// TODO: Click to toggle
 // TODO: Add config, debug, interactivity - take a look at gomatrix for some ideas
-// TODO: Command line argument for FPS
 // TODO: Add some proper control channels to exit more gracefully
+// TODO: Fix clicky clicky
+// TODO: Can we do better than using a clever wait to do a loop. Look up go game loops. Anything channel based?
 // TODO: Handle resizing
 
 func Begin(fps int) {
@@ -31,6 +31,7 @@ func Begin(fps int) {
 		panic(err)
 	}
 	defer termbox.Close()
+	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
 
 	w, h := termbox.Size()
 	life := NewLife(w, h)
@@ -68,18 +69,31 @@ func (g *Game) loop() {
 }
 
 func (g *Game) handleEvent(e termbox.Event) {
-	if e.Type == termbox.EventKey {
-		switch {
-		case exitEvent(e):
-			g.running = false
-		case e.Ch == 'r':
-			g.life.Randomise()
-		case e.Key == termbox.KeySpace:
-			g.paused = !g.paused
-		}
+	switch e.Type {
+	case termbox.EventKey:
+		g.handleKeyEvent(e)
+	case termbox.EventMouse:
+		g.handleMouseEvent(e)
 	}
 }
 
+func (g *Game) handleKeyEvent(e termbox.Event) {
+	switch {
+	case exitEvent(e):
+		g.running = false
+	case e.Ch == 'r':
+		g.life.Randomise()
+	case e.Key == termbox.KeySpace:
+		g.paused = !g.paused
+	}
+}
+
+func (g *Game) handleMouseEvent(e termbox.Event) {
+	switch {
+	case e.Key == termbox.MouseLeft:
+		g.life.Flip(e.MouseX, e.MouseY)
+	}
+}
 func exitEvent(e termbox.Event) bool {
 	return e.Ch == 'q' ||
 		e.Key == termbox.KeyEsc ||
