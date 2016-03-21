@@ -18,11 +18,10 @@ type Game struct {
 	running, paused    bool
 }
 
-// TODO: Add config, debug, interactivity - take a look at gomatrix for some ideas
+// TODO: Add config, debug, interactivity - take a look at gomatrix or termloop for some ideas
 // TODO: Add some proper control channels to exit more gracefully
-// TODO: Fix clicky clicky
 // TODO: Can we do better than using a clever wait to do a loop. Look up go game loops. Anything channel based?
-// TODO: Handle resizing
+// TODO: Does a really small terminal break things? 1*1
 
 func Begin(fps int) {
 
@@ -31,7 +30,7 @@ func Begin(fps int) {
 		panic(err)
 	}
 	defer termbox.Close()
-	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
+	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 
 	w, h := termbox.Size()
 	life := NewLife(w, h)
@@ -45,7 +44,6 @@ func Begin(fps int) {
 	game.Start()
 
 }
-
 
 func (g *Game) Start() {
 	g.running = true
@@ -74,6 +72,8 @@ func (g *Game) handleEvent(e termbox.Event) {
 		g.handleKeyEvent(e)
 	case termbox.EventMouse:
 		g.handleMouseEvent(e)
+	case termbox.EventResize:
+		g.handleResize(e)
 	}
 }
 
@@ -94,6 +94,12 @@ func (g *Game) handleMouseEvent(e termbox.Event) {
 		g.life.Flip(e.MouseX, e.MouseY)
 	}
 }
+
+func (g *Game) handleResize(e termbox.Event) {
+	g.life.Resize(e.Width, e.Height)
+	g.life.Draw()
+}
+
 func exitEvent(e termbox.Event) bool {
 	return e.Ch == 'q' ||
 		e.Key == termbox.KeyEsc ||
