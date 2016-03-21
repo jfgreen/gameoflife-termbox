@@ -18,10 +18,8 @@ type Game struct {
 	running, paused    bool
 }
 
-// TODO: Add config, debug, interactivity - take a look at gomatrix or termloop for some ideas
-// TODO: Add some proper control channels to exit more gracefully
-// TODO: Can we do better than using a clever wait to do a loop. Look up go game loops. Anything channel based?
-// TODO: Does a really small terminal break things? 1*1
+// TODO: Add debug - take a look at gomatrix or termloop for some ideas
+// TODO: Add loading of data files from GOL wiki. As long as they are not too large.
 
 func Begin(fps int) {
 
