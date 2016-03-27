@@ -1,7 +1,7 @@
 package game
 
 type Life struct {
-	world, temp *Grid
+	world, temp   *Grid
 	Width, Height int
 }
 
@@ -56,6 +56,10 @@ func (l *Life) Resize(width, height int) {
 	l.Width = width
 	l.Height = height
 	l.world, l.temp = l.temp, l.world
+}
+
+func (l *Life) ContainsCoordinate(x, y int) bool {
+	return x >= 0 && x < l.Width && y >= 0 && y < l.Height
 }
 
 func min(a, b int) int {
