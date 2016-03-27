@@ -5,6 +5,7 @@ import (
 	"github.com/nsf/termbox-go"
 	"log"
 	"time"
+	"math/rand"
 )
 
 const alive rune = '█'
@@ -19,12 +20,40 @@ type Game struct {
 	running, paused bool
 }
 
-// TODO: Add loading of data files from GOL wiki. As long as they are not too large.
-// TODO: +/- fps
-// TODO: Allow random seed as flag
+// TODO: Allow centering flag
 // TODO: Do we want to do some tests?
+// TODO: Godoc?
 
-func Begin(fps int) error {
+type LifeProducer interface {
+	produce(int, int) (*Life, error)
+}
+
+type RandomLifeProducer struct {
+	Seed int64
+}
+
+func (c *RandomLifeProducer) produce(w, h int) (*Life, error) {
+	l := NewEmptyLife(w, h)
+	rand.Seed(c.Seed)
+	l.Randomise()
+	return l, nil
+}
+
+type SaveFileLifeProducer struct {
+	Filepath string
+}
+
+func (s *SaveFileLifeProducer) produce(w, h int) (*Life, error) {
+	grid, err := LoadLife16File(s.Filepath)
+	if err != nil {
+		return nil, err
+	}
+	life := NewLifeFromGrid(grid)
+	life.Resize(w, h)
+	return life, nil
+}
+
+func Begin(fps int, creator LifeProducer) error {
 	log.Println("Starting game of life.")
 
 	if fps < 1 || fps > 60 {
@@ -33,15 +62,15 @@ func Begin(fps int) error {
 
 	err := termbox.Init()
 	if err != nil {
-		log.Fatalln("Could not initalise termbox ", err)
+		return err
 	}
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 
-	w, h := termbox.Size()
-	life := NewLife(w, h)
-	life.Randomise()
-
+	life, err := creator.produce(termbox.Size())
+	if err != nil {
+		return err
+	}
 	delay := time.Duration((float32(time.Second) / float32(fps)))
 	eventQueue := make(chan termbox.Event)
 	publishEvents(eventQueue)

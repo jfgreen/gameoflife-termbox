@@ -5,10 +5,15 @@ type Life struct {
 	Width, Height int
 }
 
-func NewLife(width, height int) *Life {
+func NewEmptyLife(width, height int) *Life {
 	world := NewGrid(width, height)
 	temp := NewGrid(width, height)
 	return &Life{world, temp, width, height}
+}
+
+func NewLifeFromGrid(g *Grid) *Life {
+	temp := NewGrid(g.Width, g.Height)
+	return &Life{g, temp, g.Width, g.Height}
 }
 
 func (l *Life) Step() {
