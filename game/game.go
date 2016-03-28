@@ -8,7 +8,7 @@ import (
 	"math/rand"
 )
 
-const alive rune = '█'
+const alive rune = '●'
 const aliveCol = termbox.ColorGreen
 const bgCol = termbox.ColorDefault
 
@@ -20,7 +20,8 @@ type Game struct {
 	running, paused bool
 }
 
-// TODO: Allow centering flag
+// TODO: replace gif with that of a small oscilator or something pretty
+// TODO: Document expected format and supply some choice examples
 // TODO: Do we want to do some tests?
 // TODO: Godoc?
 
@@ -48,9 +49,10 @@ func (s *SaveFileLifeProducer) produce(w, h int) (*Life, error) {
 	if err != nil {
 		return nil, err
 	}
-	life := NewLifeFromGrid(grid)
-	life.Resize(w, h)
-	return life, nil
+	tx := (w/2) + grid.Width/2
+	ty := (h/2) + grid.Height/2
+	grid = TranslateGrid(ResizeGrid(grid, w, h), tx, ty)
+	return NewLifeFromGrid(grid), nil
 }
 
 func Begin(fps int, creator LifeProducer) error {

@@ -49,18 +49,14 @@ func (l *Life) Randomise() {
 }
 
 func (l *Life) Resize(width, height int) {
+	l.world = ResizeGrid(l.world, width, height)
 	l.temp = NewGrid(width, height)
-	minWidth := min(l.Width, width)
-	minHeight := min(l.Height, height)
-	for x := 0; x < minWidth; x++ {
-		for y := 0; y < minHeight; y++ {
-			l.temp.Set(x, y, l.world.Get(x, y))
-		}
-	}
-	l.world = NewGrid(width, height)
 	l.Width = width
 	l.Height = height
-	l.world, l.temp = l.temp, l.world
+}
+
+func (l *Life) Translate() {
+
 }
 
 func (l *Life) ContainsCoordinate(x, y int) bool {

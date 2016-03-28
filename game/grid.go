@@ -19,6 +19,28 @@ func NewGrid(width, height int) *Grid {
 	return &Grid{cells, width, height}
 }
 
+func ResizeGrid(g *Grid, width, height int) *Grid {
+	newGrid := NewGrid(width, height)
+	minWidth := min(g.Width, width)
+	minHeight := min(g.Height, height)
+	for x := 0; x < minWidth; x++ {
+		for y := 0; y < minHeight; y++ {
+			newGrid.Set(x, y, g.Get(x, y))
+		}
+	}
+	return newGrid
+}
+
+func TranslateGrid(g *Grid, dx, dy int) *Grid {
+	newGrid := NewGrid(g.Width, g.Height)
+	for x := 0; x < g.Width; x++ {
+		for y := 0; y < g.Height; y++ {
+			newGrid.Set(x, y, g.GetToroidal(x+dx, y+dy))
+		}
+	}
+	return newGrid
+}
+
 func (g *Grid) Randomise() {
 	for x := 0; x < g.Width; x++ {
 		for y := 0; y < g.Height; y++ {
@@ -31,8 +53,7 @@ func (g *Grid) ActiveNeighbours(x, y int) int {
 	activeNeighbours := 0
 	for dx := -1; dx <= 1; dx++ {
 		for dy := -1; dy <= 1; dy++ {
-			nx, ny := g.toroidal(x+dx, y+dy)
-			if (dx != 0 || dy != 0) && g.Get(nx, ny) {
+			if (dx != 0 || dy != 0) && g.GetToroidal(x+dx, y+dy) {
 				activeNeighbours++
 			}
 		}
@@ -48,6 +69,10 @@ func (g *Grid) Set(x, y int, s bool) {
 	g.cells[y][x] = s
 }
 
+func (g *Grid) GetToroidal(x, y int) bool {
+	return g.Get(g.toroidal(x, y))
+}
+
 func (g *Grid) toroidal(x, y int) (tx, ty int) {
 	tx = x % g.Width
 	ty = y % g.Height
@@ -59,3 +84,6 @@ func (g *Grid) toroidal(x, y int) (tx, ty int) {
 	}
 	return
 }
+
+
+
