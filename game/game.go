@@ -9,7 +9,8 @@ import (
 )
 
 const alive rune = '●'
-const aliveCol = termbox.ColorGreen
+const aliveCol = termbox.ColorBlue
+const birthCol = termbox.ColorCyan
 const bgCol = termbox.ColorDefault
 
 type Game struct {
@@ -20,6 +21,7 @@ type Game struct {
 	running, paused bool
 }
 
+// TODO: Allow flag for exiting after a certain number of iterations
 // TODO: replace gif with that of a small oscilator or something pretty
 // TODO: Document expected format and supply some choice examples
 // TODO: Do we want to do some tests?
@@ -175,8 +177,12 @@ func (l *Life) Draw() {
 	w, h := l.Width, l.Height
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
-			if l.Alive(x, y) {
-				termbox.SetCell(x, y, alive, aliveCol, bgCol)
+			if l.world.Get(x, y) {
+				if l.prev.Get(x,y) {
+					termbox.SetCell(x, y, alive, aliveCol, bgCol)
+				} else {
+					termbox.SetCell(x,y, alive, birthCol, bgCol)
+				}
 			}
 		}
 	}

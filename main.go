@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	fps := flag.Int("fps", 15, "Frames per second.")
+	fps := flag.Int("fps", 10, "Frames per second.")
 	logpath := flag.String("log", os.DevNull, "Path of logfile to write debugging messages to.")
 	seed := flag.Int64("seed", 0, "Seed to be used in initialisation of random life.")
 	savefile := flag.String("file", "", "Path of pattern file to initalise game with. Takes precedence over --seed.")

@@ -1,7 +1,7 @@
 package game
 
 type Life struct {
-	world, temp   *Grid
+	world, prev   *Grid
 	Width, Height int
 }
 
@@ -19,10 +19,10 @@ func NewLifeFromGrid(g *Grid) *Life {
 func (l *Life) Step() {
 	for x := 0; x < l.world.Width; x++ {
 		for y := 0; y < l.world.Height; y++ {
-			l.temp.Set(x, y, l.nextState(x, y))
+			l.prev.Set(x, y, l.nextState(x, y))
 		}
 	}
-	l.world, l.temp = l.temp, l.world
+	l.world, l.prev = l.prev, l.world
 }
 
 func (l *Life) nextState(x, y int) bool {
@@ -50,7 +50,7 @@ func (l *Life) Randomise() {
 
 func (l *Life) Resize(width, height int) {
 	l.world = ResizeGrid(l.world, width, height)
-	l.temp = NewGrid(width, height)
+	l.prev = NewGrid(width, height)
 	l.Width = width
 	l.Height = height
 }
