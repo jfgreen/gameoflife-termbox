@@ -22,10 +22,11 @@ type Game struct {
 }
 
 // TODO: Allow flag for exiting after a certain number of iterations
-// TODO: replace gif with that of a small oscilator or something pretty
 // TODO: Document expected format and supply some choice examples
+// TODO: Flag for specifying alive
 // TODO: Do we want to do some tests?
 // TODO: Godoc?
+// TODO: Rainbow mode.
 
 type LifeProducer interface {
 	produce(int, int) (*Life, error)
