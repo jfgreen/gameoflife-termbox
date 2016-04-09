@@ -1,11 +1,10 @@
 package game
 
 import (
-	"errors"
 	"github.com/nsf/termbox-go"
 	"log"
-	"time"
 	"math/rand"
+	"time"
 )
 
 const alive rune = '●'
@@ -14,12 +13,13 @@ const birthCol = termbox.ColorCyan
 const bgCol = termbox.ColorDefault
 
 type Game struct {
+	FrameDelay      time.Duration
+	Producer        LifeProducer
 	life            *Life
 	eventQueue      chan termbox.Event
-	frameDelay      time.Duration
 	lastTick        time.Time
-	running, paused bool
-	producer        LifeProducer
+	exiting, paused bool
+	err             error
 }
 
 // TODO: Allow flag for exiting after a certain number of iterations
@@ -53,45 +53,38 @@ func (s *SaveFileLifeProducer) produce(w, h int) (*Life, error) {
 	if err != nil {
 		return nil, err
 	}
-	tx := (w/2) + grid.Width/2
-	ty := (h/2) + grid.Height/2
+	tx := (w / 2) + grid.Width/2
+	ty := (h / 2) + grid.Height/2
 	grid = TranslateGrid(ResizeGrid(grid, w, h), tx, ty)
 	return NewLifeFromGrid(grid), nil
 }
 
-func Begin(fps int, producer LifeProducer) error {
-	log.Println("Starting game of life.")
-
-	if fps < 1 || fps > 60 {
-		return errors.New("Error: fps not within range 1-60")
+func (g *Game) Init() {
+	g.paused = false
+	g.exiting = false
+	g.err = termbox.Init()
+	if g.err != nil {
+		return
 	}
-
-	err := termbox.Init()
-	if err != nil {
-		return err
-	}
-	defer termbox.Close()
+	g.eventQueue = make(chan termbox.Event)
+	publishEvents(g.eventQueue)
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
-
-	life, err := producer.produce(termbox.Size())
-	if err != nil {
-		return err
-	}
-	delay := time.Duration((float32(time.Second) / float32(fps)))
-	eventQueue := make(chan termbox.Event)
-	publishEvents(eventQueue)
-	game := &Game{life: life, eventQueue: eventQueue, frameDelay: delay, producer:producer}
-	game.Start()
-	log.Println("Exiting game of life.")
-	return nil
+	g.life, g.err = g.Producer.produce(termbox.Size())
 }
 
-func (g *Game) Start() {
-	g.running = true
-	g.paused = false
-	for g.running {
+func (g *Game) Run() {
+	for g.running() {
 		g.loop()
 	}
+	termbox.Close()
+}
+
+func (g *Game) Err() error {
+	return g.err
+}
+
+func (g *Game) running() bool {
+	return !g.exiting && g.err == nil
 }
 
 func (g *Game) loop() {
@@ -122,10 +115,10 @@ func (g *Game) handleKeyEvent(e termbox.Event) {
 	switch {
 	case exitEvent(e):
 		log.Println("Request to exit recieved, requesting termination of game loop")
-		g.running = false
+		g.exiting = true
 	case e.Ch == 'r':
 		log.Println("Recreating game")
-		g.life, _ = g.producer.produce(termbox.Size())
+		g.life, g.err = g.Producer.produce(termbox.Size())
 	case e.Key == termbox.KeySpace:
 		log.Println("Toggling paused")
 		g.paused = !g.paused
@@ -162,7 +155,7 @@ func (g *Game) wait() {
 	timeSinceLastTick := time.Since(g.lastTick)
 	g.lastTick = time.Now()
 	timeSinceLastTick.Hours()
-	time.Sleep(g.frameDelay - timeSinceLastTick)
+	time.Sleep(g.FrameDelay - timeSinceLastTick)
 }
 
 func publishEvents(c chan termbox.Event) {
@@ -180,10 +173,10 @@ func (l *Life) Draw() {
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			if l.world.Get(x, y) {
-				if l.prev.Get(x,y) {
+				if l.prev.Get(x, y) {
 					termbox.SetCell(x, y, alive, aliveCol, bgCol)
 				} else {
-					termbox.SetCell(x,y, alive, birthCol, bgCol)
+					termbox.SetCell(x, y, alive, birthCol, bgCol)
 				}
 			}
 		}

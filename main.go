@@ -21,9 +21,16 @@ func main() {
 	defer logfile.Close()
 	log.SetOutput(logfile)
 	producer := createLifeProducer(*seed, *savefile)
-	err := game.Begin(*fps, producer)
-	if err != nil {
-		fmt.Println("Problem running game: ", err)
+	delay := fpsToDelay(*fps)
+
+	log.Println("Starting game of life.")
+	game := &game.Game{FrameDelay: delay, Producer: producer}
+	game.Init()
+	game.Run()
+	log.Println("Exiting game of life.")
+
+	if game.Err() != nil {
+		fmt.Println("Problem running game: ", game.Err())
 		os.Exit(1)
 	}
 }
@@ -45,4 +52,12 @@ func createLogfile(filepath string) *os.File {
 		os.Exit(1)
 	}
 	return logfile
+}
+
+func fpsToDelay(fps int) time.Duration {
+	if fps < 1 || fps > 60 {
+		fmt.Println("Error: fps not within range 1-60")
+		os.Exit(1)
+	}
+	return time.Duration((float32(time.Second) / float32(fps)))
 }
