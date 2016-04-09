@@ -19,6 +19,7 @@ type Game struct {
 	frameDelay      time.Duration
 	lastTick        time.Time
 	running, paused bool
+	producer        LifeProducer
 }
 
 // TODO: Allow flag for exiting after a certain number of iterations
@@ -58,7 +59,7 @@ func (s *SaveFileLifeProducer) produce(w, h int) (*Life, error) {
 	return NewLifeFromGrid(grid), nil
 }
 
-func Begin(fps int, creator LifeProducer) error {
+func Begin(fps int, producer LifeProducer) error {
 	log.Println("Starting game of life.")
 
 	if fps < 1 || fps > 60 {
@@ -72,14 +73,14 @@ func Begin(fps int, creator LifeProducer) error {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 
-	life, err := creator.produce(termbox.Size())
+	life, err := producer.produce(termbox.Size())
 	if err != nil {
 		return err
 	}
 	delay := time.Duration((float32(time.Second) / float32(fps)))
 	eventQueue := make(chan termbox.Event)
 	publishEvents(eventQueue)
-	game := &Game{life: life, eventQueue: eventQueue, frameDelay: delay}
+	game := &Game{life: life, eventQueue: eventQueue, frameDelay: delay, producer:producer}
 	game.Start()
 	log.Println("Exiting game of life.")
 	return nil
@@ -123,8 +124,8 @@ func (g *Game) handleKeyEvent(e termbox.Event) {
 		log.Println("Request to exit recieved, requesting termination of game loop")
 		g.running = false
 	case e.Ch == 'r':
-		log.Println("Randomising game")
-		g.life.Randomise()
+		log.Println("Recreating game")
+		g.life, _ = g.producer.produce(termbox.Size())
 	case e.Key == termbox.KeySpace:
 		log.Println("Toggling paused")
 		g.paused = !g.paused
