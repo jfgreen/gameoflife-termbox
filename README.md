@@ -1,6 +1,6 @@
 # Game Of Life - Termbox
 
-![Game Of Life](/img/gol.gif)
+![Game Of Life](/img/achim.gif)
 
 Yet another Go implementation of Conway's [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Mostly an excuse to learn and practise the language but also to test out
