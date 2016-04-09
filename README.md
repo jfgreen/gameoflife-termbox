@@ -32,4 +32,3 @@ Mostly an excuse to learn and practise the language but also to test out
 ## Performance
 
 Can run a bit slow on on large terminals, your millage may vary.
-
