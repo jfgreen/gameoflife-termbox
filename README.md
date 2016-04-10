@@ -38,7 +38,7 @@ The [Game Of Life Wiki](http://www.conwaylife.com/wiki/Main_Page) has a collecti
 
 - Spacebar to pause/unpause.
 - Mouse click to toggle cell (if your terminal supports it).
-- R to restart with randomised grid.
+- R to restart game.
 - Q or CTRL-C to exit.
 
 ## Performance

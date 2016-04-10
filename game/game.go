@@ -3,7 +3,6 @@ package game
 import (
 	"github.com/nsf/termbox-go"
 	"log"
-	"math/rand"
 	"time"
 )
 
@@ -25,36 +24,6 @@ type Game struct {
 // TODO: Do we want to do some tests?
 // TODO: Godoc?
 // TODO: Rainbow mode.
-
-type LifeProducer interface {
-	produce(int, int) (*Life, error)
-}
-
-type RandomLifeProducer struct {
-	Seed int64
-}
-
-func (c *RandomLifeProducer) produce(w, h int) (*Life, error) {
-	l := NewEmptyLife(w, h)
-	rand.Seed(c.Seed)
-	l.Randomise()
-	return l, nil
-}
-
-type SaveFileLifeProducer struct {
-	Filepath string
-}
-
-func (s *SaveFileLifeProducer) produce(w, h int) (*Life, error) {
-	grid, err := LoadLife16File(s.Filepath)
-	if err != nil {
-		return nil, err
-	}
-	tx := (w / 2) + grid.Width/2
-	ty := (h / 2) + grid.Height/2
-	grid = TranslateGrid(ResizeGrid(grid, w, h), tx, ty)
-	return NewLifeFromGrid(grid), nil
-}
 
 func (g *Game) Init() {
 	g.paused = false

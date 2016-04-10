@@ -55,10 +55,6 @@ func (l *Life) Resize(width, height int) {
 	l.Height = height
 }
 
-func (l *Life) Translate() {
-
-}
-
 func (l *Life) ContainsCoordinate(x, y int) bool {
 	return x >= 0 && x < l.Width && y >= 0 && y < l.Height
 }
