@@ -23,14 +23,16 @@ The [Game Of Life Wiki](http://www.conwaylife.com/wiki/Main_Page) has a collecti
 ### Command line flags:
 
 ```
+  -alive string
+    	Character to use to render alive cells. (default "●")
   -file string
-        Path of pattern file to initialise game with. Takes precedence over --seed.
+    	Path of pattern file to initialise game with. Takes precedence over --seed.
   -fps int
-        Frames per second. (default 15)
+    	Frames per second. (default 10)
   -log string
-        Path of logfile to write debugging messages to. (default "/dev/null")
+    	Path of logfile to write debugging messages to. (default "/dev/null")
   -seed int
-        Seed to be used in initialisation of random life.
+    	Seed to be used in initialisation of random life.
 ```
 ### Controls:
 
