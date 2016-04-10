@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-const alive rune = '●'
 const aliveCol = termbox.ColorBlue
 const birthCol = termbox.ColorCyan
 const bgCol = termbox.ColorDefault
@@ -15,6 +14,7 @@ const bgCol = termbox.ColorDefault
 type Game struct {
 	FrameDelay      time.Duration
 	Producer        LifeProducer
+	Alive 		rune
 	life            *Life
 	eventQueue      chan termbox.Event
 	lastTick        time.Time
@@ -22,9 +22,6 @@ type Game struct {
 	err             error
 }
 
-// TODO: Allow flag for exiting after a certain number of iterations
-// TODO: Document expected format and supply some choice examples
-// TODO: Flag for specifying alive
 // TODO: Do we want to do some tests?
 // TODO: Godoc?
 // TODO: Rainbow mode.
@@ -95,7 +92,7 @@ func (g *Game) loop() {
 		if !g.paused {
 			g.life.Step()
 		}
-		g.life.Draw()
+		g.Draw()
 		g.wait()
 	}
 }
@@ -141,7 +138,7 @@ func (g *Game) handleMouseEvent(e termbox.Event) {
 func (g *Game) handleResize(e termbox.Event) {
 	log.Printf("Terminal resizing from (%d,%d) to (%d,%d)\n", g.life.Width, g.life.Height, e.Width, e.Height)
 	g.life.Resize(e.Width, e.Height)
-	g.life.Draw()
+	g.Draw()
 }
 
 func exitEvent(e termbox.Event) bool {
@@ -166,17 +163,17 @@ func publishEvents(c chan termbox.Event) {
 	}()
 }
 
-func (l *Life) Draw() {
-
+func (g *Game) Draw() {
+	l := g.life
 	termbox.Clear(bgCol, bgCol)
 	w, h := l.Width, l.Height
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			if l.world.Get(x, y) {
 				if l.prev.Get(x, y) {
-					termbox.SetCell(x, y, alive, aliveCol, bgCol)
+					termbox.SetCell(x, y, g.Alive, aliveCol, bgCol)
 				} else {
-					termbox.SetCell(x, y, alive, birthCol, bgCol)
+					termbox.SetCell(x, y, g.Alive, birthCol, bgCol)
 				}
 			}
 		}

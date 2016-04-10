@@ -8,13 +8,23 @@ Mostly an excuse to learn and practise the language but also to test out
 
 ## Running
 
+To start a randomly initiated game:
+
 `go run main.go`
+
+
+To load and run a particular pattern, specify a path to a valid
+[Life 1.6](http://www.conwaylife.com/wiki/Life_1.06) file:
+
+`go run main.go -file pattern.lif`
+
+The [Game Of Life Wiki](http://www.conwaylife.com/wiki/Main_Page) has a collection of 3000+ patterns in this format.
 
 ### Command line flags:
 
 ```
   -file string
-        Path of pattern file to initalise game with. Takes precedence over --seed.
+        Path of pattern file to initialise game with. Takes precedence over --seed.
   -fps int
         Frames per second. (default 15)
   -log string
