@@ -2,6 +2,11 @@ package game
 
 import "testing"
 
+const (
+	D bool = false
+	A bool = true
+)
+
 func TestNewGridNormalCases(t *testing.T) {
 	cases := []struct{ x, y int }{
 		{1, 1},
@@ -40,37 +45,37 @@ func TestNeighbours(t *testing.T) {
 		want int
 	}{
 		{grid: &Grid{[][]bool{
-			{false, false, false, false, false},
-			{false, false, false, false, false},
-			{false, false, false, false, false},
-			{false, false, false, false, false},
-			{false, false, false, false, false},
+			{D, D, D, D, D},
+			{D, D, D, D, D},
+			{D, D, D, D, D},
+			{D, D, D, D, D},
+			{D, D, D, D, D},
 		}, 5, 5}, x: 2, y: 2, want: 0},
 		{grid: &Grid{[][]bool{
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
+			{A, A, A, A, A},
+			{A, A, A, A, A},
+			{A, A, A, A, A},
+			{A, A, A, A, A},
+			{A, A, A, A, A},
 		}, 5, 5}, x: 2, y: 2, want: 8},
 		{grid: &Grid{[][]bool{
-			{false, false, false, true, false},
-			{false, true, true, false, false},
-			{false, true, false, false, true},
-			{false, false, true, false, true},
-			{false, true, false, false, false},
+			{D, D, D, A, D},
+			{D, A, A, D, D},
+			{D, A, D, D, A},
+			{D, D, A, D, A},
+			{D, A, D, D, D},
 		}, 5, 5}, x: 3, y: 2, want: 4},
 		{grid: &Grid{[][]bool{
-			{true, false, false, true, true},
-			{false, false, false, false, false},
-			{true, false, false, true, true},
-			{true, false, false, true, false},
+			{A, D, D, A, A},
+			{D, D, D, D, D},
+			{A, D, D, A, A},
+			{A, D, D, A, D},
 		}, 5, 4}, x: 4, y: 3, want: 8},
 		{grid: &Grid{[][]bool{
-			{false, true, false, false, true},
-			{true, true, false, false, true},
-			{false, false, false, false, false},
-			{true, true, false, false, true},
+			{D, A, D, D, A},
+			{A, A, D, D, A},
+			{D, D, D, D, D},
+			{A, A, D, D, A},
 		}, 5, 4}, x: 0, y: 0, want: 8},
 	}
 	for _, c := range cases {
