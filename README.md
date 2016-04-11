@@ -20,7 +20,7 @@ To load and run a particular pattern, specify a path to a valid
 
 The [Game Of Life Wiki](http://www.conwaylife.com/wiki/Main_Page) has a collection of 3000+ patterns in this format.
 
-### Command line flags:
+### Command line flags
 
 ```
   -alive string
@@ -34,12 +34,16 @@ The [Game Of Life Wiki](http://www.conwaylife.com/wiki/Main_Page) has a collecti
   -seed int
     	Seed to be used in initialisation of random life.
 ```
-### Controls:
+### Controls
 
 - Spacebar to pause/unpause.
 - Mouse click to toggle cell (if your terminal supports it).
 - R to restart game.
 - Q or CTRL-C to exit.
+
+## Running tests
+
+`go test github.com/jfgreen/gameoflife-termbox/game`
 
 ## Performance
 
