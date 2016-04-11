@@ -11,7 +11,7 @@ type RandomLifeProducer struct {
 }
 
 func (c *RandomLifeProducer) produce(w, h int) (*Life, error) {
-	l := NewEmptyLife(w, h)
+	l := NewLifeEmpty(w, h)
 	rand.Seed(c.Seed)
 	l.Randomise()
 	return l, nil

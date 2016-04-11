@@ -22,7 +22,7 @@ func NewGrid(width, height int) *Grid {
 }
 
 // ResizeGrid returns a copy of grid g, resized to dimensions specified by width and height.
-// If g is smaller than the given dimensions, extra cells in the returned grid will be false.
+// If g is smaller than the given dimensions, cells created to make up the size will be false.
 // If g is larger than the given dimensions, cells that don't fit in the returned grid will be truncated.
 func ResizeGrid(g *Grid, width, height int) *Grid {
 	newGrid := NewGrid(width, height)
@@ -86,7 +86,7 @@ func (g *Grid) GetToroidal(x, y int) bool {
 	return g.Get(g.toroidal(x, y))
 }
 
-// toroidal returns grid coordinates based on the torioidal value of coordinate x, y.
+// toroidal returns grid coordinates based on the toroidal value of coordinate x, y.
 // If x or y are outside the range of the grid, the returned coordinate will be wrapped around.
 func (g *Grid) toroidal(x, y int) (tx, ty int) {
 	tx = x % g.Width
@@ -100,5 +100,11 @@ func (g *Grid) toroidal(x, y int) (tx, ty int) {
 	return
 }
 
-
+// min returns the smaller of integers a and b.
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
 
