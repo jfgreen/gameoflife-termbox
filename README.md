@@ -8,7 +8,7 @@ Mostly an excuse to learn and practise the language but also to test out
 
 ## Running
 
-To start a randomly initiated game:
+To start a randomly initialised game:
 
 `go run main.go`
 
